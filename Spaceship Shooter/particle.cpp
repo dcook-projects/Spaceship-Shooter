@@ -22,7 +22,7 @@ Particle::Particle(App& app, int x, int y) {
 
 //a star is dead if it goes below the screen
 bool Particle::isDead() {
-	if (posY > SCREEN_HEIGHT)
+	if (posY > App::SCREEN_HEIGHT)
 		return true;
 	else
 		return false;

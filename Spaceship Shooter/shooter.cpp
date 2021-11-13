@@ -33,7 +33,7 @@ bool init(App& app) {
 		printf("Warning: Linear texture filtering not enabled!");
 	}
 
-	app.window = SDL_CreateWindow("Spaceship Shooter", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+	app.window = SDL_CreateWindow("Spaceship Shooter", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, App::SCREEN_WIDTH, App::SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (app.window == nullptr) {
 		printf("%s\n", SDL_GetError());
 		return false;
@@ -208,38 +208,33 @@ void renderInfo(App& app) {
 	std::stringstream currentDisplay;
 
 	//render titles
-	app.scoreTitleTextTexture.render(app, SCREEN_WIDTH / 4 - app.scoreTitleTextTexture.getWidth() / 2, 0);
-	app.levelTitleTextTexture.render(app, SCREEN_WIDTH * 2 / 4 - app.levelTitleTextTexture.getWidth() / 2, 0);
-	app.livesTitleTextTexture.render(app, SCREEN_WIDTH * 3 / 4 - app.livesTitleTextTexture.getWidth() / 2, 0);
+	app.scoreTitleTextTexture.render(app, App::SCREEN_WIDTH / 4 - app.scoreTitleTextTexture.getWidth() / 2, 0);
+	app.levelTitleTextTexture.render(app, App::SCREEN_WIDTH * 2 / 4 - app.levelTitleTextTexture.getWidth() / 2, 0);
+	app.livesTitleTextTexture.render(app, App::SCREEN_WIDTH * 3 / 4 - app.livesTitleTextTexture.getWidth() / 2, 0);
 
 	//render score data
 	currentDisplay.str("");
 	currentDisplay << app.score;
 	app.scoreTextTexture.loadFromRenderedText(app, currentDisplay.str(), { 255, 255, 255 });
-	app.scoreTextTexture.render(app, (SCREEN_WIDTH - app.scoreTitleTextTexture.getWidth()) / 4 - 30, app.scoreTitleTextTexture.getHeight() + 1);
+	app.scoreTextTexture.render(app, (App::SCREEN_WIDTH - app.scoreTitleTextTexture.getWidth()) / 4 - 30, app.scoreTitleTextTexture.getHeight() + 1);
 
 	//render level data
 	currentDisplay.str("");
 	currentDisplay << app.currentLevel;
 	app.levelTextTexture.loadFromRenderedText(app, currentDisplay.str(), { 255, 255, 255 });
-	app.levelTextTexture.render(app, SCREEN_WIDTH * 2 / 4, app.levelTitleTextTexture.getHeight() + 1);
+	app.levelTextTexture.render(app, App::SCREEN_WIDTH * 2 / 4, app.levelTitleTextTexture.getHeight() + 1);
 
 	//render lives data
 	currentDisplay.str("");
 	currentDisplay << app.numLives;
 	app.livesTextTexture.loadFromRenderedText(app, currentDisplay.str(), { 255, 255, 255 });
-	app.livesTextTexture.render(app, SCREEN_WIDTH * 3 / 4, app.livesTitleTextTexture.getHeight() + 1);
+	app.livesTextTexture.render(app, App::SCREEN_WIDTH * 3 / 4, app.livesTitleTextTexture.getHeight() + 1);
 }
 
 int main(int argc, char* argv[]) {
 	srand(time(nullptr));
 
-	static constexpr int FRAME_RATE = 60;
-	static constexpr int MS_PER_FRAME = 1000 / FRAME_RATE;
-	static constexpr int TIME_BETWEEN_SHOTS = 500;
-	static constexpr int TRANSITION_TIME = 4000;
-	static constexpr int MAX_DIVING_ENEMIES = 2;
-	static constexpr int DESTINATION_VARIANCE = 150;
+
 	bool quit = false, firstLevelNotCreated = true;		//flags
 	SDL_Event e;
 	App app;
@@ -281,7 +276,7 @@ int main(int argc, char* argv[]) {
 			else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_SPACE) {  
 				if (app.status == RUNNING) {
 					currentTime = SDL_GetTicks();
-					if (currentTime > previousTime + TIME_BETWEEN_SHOTS) {
+					if (currentTime > previousTime + App::TIME_BETWEEN_SHOTS) {
 						app.player.shoot();
 						previousTime = currentTime;
 					}
@@ -296,8 +291,8 @@ int main(int argc, char* argv[]) {
 				createLevels(app);
 				app.status = TRANSITION;
 
-				for (int row = 0; row < MAX_ENEMY_ROWS; ++row)
-					for (int col = 0; col < MAX_ENEMY_COLUMNS; ++col) {
+				for (int row = 0; row < App::MAX_ENEMY_ROWS; ++row)
+					for (int col = 0; col < App::MAX_ENEMY_COLUMNS; ++col) {
 						app.enemies[row][col].resetDiveRects();
 						app.enemies[row][col].setVelocity(0, 0);
 					}
@@ -310,7 +305,7 @@ int main(int argc, char* argv[]) {
 			if (lifeLostTimer.getTicks() == 0)
 				lifeLostTimer.start();
 
-			if (lifeLostTimer.getTicks() >= TRANSITION_TIME) {
+			if (lifeLostTimer.getTicks() >= App::TRANSITION_TIME) {
 				lifeLostTimer.stop();
 				app.player.setXPosition(75);
 				app.status = RUNNING;
@@ -332,10 +327,10 @@ int main(int argc, char* argv[]) {
 
 		//choose a random enemy to go into a dive
 		if (app.status == RUNNING) { //|| app.status == TRANSITION) {
-			if (app.numEnemiesMoving < MAX_DIVING_ENEMIES) {
-				int row = rand() % MAX_ENEMY_ROWS;
-				int col = rand() % MAX_ENEMY_COLUMNS;
-				int offset = (rand() % DESTINATION_VARIANCE) - (DESTINATION_VARIANCE / 2);
+			if (app.numEnemiesMoving < App::MAX_DIVING_ENEMIES) {
+				int row = rand() % App::MAX_ENEMY_ROWS;
+				int col = rand() % App::MAX_ENEMY_COLUMNS;
+				int offset = (rand() % App::DESTINATION_VARIANCE) - (App::DESTINATION_VARIANCE / 2);
 				SDL_Rect diveDestination = app.player.getCollider();
 
 				//make sure the offset didn't take the dive destination off screen
@@ -343,20 +338,20 @@ int main(int argc, char* argv[]) {
 				if (diveDestination.x < 0)
 					diveDestination.x = 0;
 
-				if (diveDestination.x + diveDestination.w > SCREEN_WIDTH)
-					diveDestination.x = SCREEN_WIDTH - diveDestination.w;
+				if (diveDestination.x + diveDestination.w > App::SCREEN_WIDTH)
+					diveDestination.x = App::SCREEN_WIDTH - diveDestination.w;
 
 				//make sure the randomly chosen enemy is alive and not moving
 				if (app.enemies[row][col].status == Enemy::ALIVE && app.enemies[row][col].getYVelocity() == 0) {
 					switch (app.enemies[row][col].enemyType) {
 					case Enemy::HARD:
-						app.enemies[row][col].setVelocity(0, HARD_ENEMY_VEL);
+						app.enemies[row][col].setVelocity(0, App::HARD_ENEMY_VEL);
 						break;
 					case Enemy::MEDIUM:
-						app.enemies[row][col].setVelocity(0, MEDIUM_ENEMY_VEL);
+						app.enemies[row][col].setVelocity(0, App::MEDIUM_ENEMY_VEL);
 						break;
 					case Enemy::EASY:
-						app.enemies[row][col].setVelocity(0, EASY_ENEMY_VEL);
+						app.enemies[row][col].setVelocity(0, App::EASY_ENEMY_VEL);
 						break;
 					}
 
@@ -368,8 +363,8 @@ int main(int argc, char* argv[]) {
 
 		//fire projectiles from enemies and move said projectiles
 		if (app.status == RUNNING || app.status == LIFE_RECENTLY_LOST) {
-			for (int row = 0; row < MAX_ENEMY_ROWS; ++row)
-				for (int col = 0; col < MAX_ENEMY_COLUMNS; ++col) {
+			for (int row = 0; row < App::MAX_ENEMY_ROWS; ++row)
+				for (int col = 0; col < App::MAX_ENEMY_COLUMNS; ++col) {
 					app.enemies[row][col].move(app);
 					if(app.status == RUNNING)
 						app.enemies[row][col].shoot();
@@ -384,15 +379,15 @@ int main(int argc, char* argv[]) {
 		starBackground.renderStars(app);
 		app.player.render(app);
 
-		for (int row = 0; row < MAX_ENEMY_ROWS; ++row)
-			for (int col = 0; col < MAX_ENEMY_COLUMNS; ++col)
+		for (int row = 0; row < App::MAX_ENEMY_ROWS; ++row)
+			for (int col = 0; col < App::MAX_ENEMY_COLUMNS; ++col)
 				app.enemies[row][col].render(app);
 
 		if(app.status == PAUSED)
-			app.pauseTextTexture.render(app, (SCREEN_WIDTH - app.pauseTextTexture.getWidth()) / 2, (SCREEN_HEIGHT - app.pauseTextTexture.getHeight()) / 2);
+			app.pauseTextTexture.render(app, (App::SCREEN_WIDTH - app.pauseTextTexture.getWidth()) / 2, (App::SCREEN_HEIGHT - app.pauseTextTexture.getHeight()) / 2);
 
 		if (app.status == GAME_OVER)
-			app.gameOverTexture.render(app, 5, (SCREEN_HEIGHT - app.gameOverTexture.getHeight()) / 2);
+			app.gameOverTexture.render(app, 5, (App::SCREEN_HEIGHT - app.gameOverTexture.getHeight()) / 2);
 
 		renderInfo(app);
 
@@ -400,8 +395,8 @@ int main(int argc, char* argv[]) {
 		SDL_RenderPresent(app.renderer);
 
 		frameTime = SDL_GetTicks() - startTime;
-		if(frameTime < MS_PER_FRAME)
-			SDL_Delay(MS_PER_FRAME - frameTime);
+		if(frameTime < App::MS_PER_FRAME)
+			SDL_Delay(App::MS_PER_FRAME - frameTime);
 
 		//create the next level and wait a few seconds
 		if (app.status == TRANSITION) {
@@ -410,7 +405,7 @@ int main(int argc, char* argv[]) {
 
 			createLevels(app);
 
-			if (transitionTimer.getTicks() >= TRANSITION_TIME) {
+			if (transitionTimer.getTicks() >= App::TRANSITION_TIME) {
 				transitionTimer.stop();
 				app.status = RUNNING;
 			}

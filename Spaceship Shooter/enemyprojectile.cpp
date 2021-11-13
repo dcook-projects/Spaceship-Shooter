@@ -14,7 +14,7 @@ EnemyProjectile::EnemyProjectile(int x, int y, int velocity) {
 }
 
 bool EnemyProjectile::isDead() {
-	if (posY > SCREEN_HEIGHT)
+	if (posY > App::SCREEN_HEIGHT)
 		return true;
 	else
 		return false;
@@ -34,6 +34,6 @@ void EnemyProjectile::move() {
 }
 
 void EnemyProjectile::killShot() {
-	posY = SCREEN_HEIGHT + 10;
+	posY = App::SCREEN_HEIGHT + 10;
 	collider.y = posY;
 }

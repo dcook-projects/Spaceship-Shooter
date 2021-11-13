@@ -28,6 +28,7 @@ public:
 	}
 
 private:
+	static constexpr int PLAYER_VEL = 7;
 	SDL_Rect collider;
 	int posX, posY;
 	int velX, velY;

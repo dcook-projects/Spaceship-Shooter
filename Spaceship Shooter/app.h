@@ -8,33 +8,6 @@
 #include "enemy.h"
 #include "particleengine.h"
 
-constexpr int SCREEN_WIDTH = 775;
-constexpr int SCREEN_HEIGHT = 900;
-
-//player and enemy dimensions
-constexpr int PLAYER_WIDTH = 50;
-constexpr int PLAYER_HEIGHT = 50;
-constexpr int ENEMY_WIDTH = 35;
-constexpr int ENEMY_HEIGHT = 35;
-
-//maximum space in which enemies can appear
-constexpr int MAX_ENEMY_ROWS = 5;
-constexpr int MAX_ENEMY_COLUMNS = 10;
-
-//object velocities
-constexpr int PLAYER_VEL = 7;
-constexpr int PLAYER_PROJECTILE_VEL = 20;
-constexpr int EASY_ENEMY_VEL = 4;
-constexpr int MEDIUM_ENEMY_VEL = 5;
-constexpr int HARD_ENEMY_VEL = 6;
-
-//projectile sizes
-constexpr int PLAYER_PROJ_WIDTH = 10;
-constexpr int PLAYER_PROJ_HEIGHT = 25;
-constexpr int ENEMY_PROJ_WIDTH = 10;
-constexpr int ENEMY_PROJ_HEIGHT = 25;
-
-
 enum Game_Status {
 	PAUSED,
 	RUNNING,
@@ -50,6 +23,34 @@ struct App {
 	TTF_Font* font = nullptr;
 
 	Mix_Music* music = nullptr;
+
+	/* GAME CONSTANTS*/
+	//window dimensions
+	static constexpr int SCREEN_WIDTH = 775;
+	static constexpr int SCREEN_HEIGHT = 900;
+
+	//player and enemy dimensions
+	static constexpr int PLAYER_WIDTH = 50;
+	static constexpr int PLAYER_HEIGHT = 50;
+	static constexpr int ENEMY_WIDTH = 35;
+	static constexpr int ENEMY_HEIGHT = 35;
+
+	//maximum space in which enemies can appear
+	static constexpr int MAX_ENEMY_ROWS = 5;
+	static constexpr int MAX_ENEMY_COLUMNS = 10;
+
+	//object velocities
+	static constexpr int EASY_ENEMY_VEL = 4;
+	static constexpr int MEDIUM_ENEMY_VEL = 5;
+	static constexpr int HARD_ENEMY_VEL = 6;
+
+	//other game constants
+	static constexpr int FRAME_RATE = 60;
+	static constexpr int MS_PER_FRAME = 1000 / FRAME_RATE;
+	static constexpr int TIME_BETWEEN_SHOTS = 500;
+	static constexpr int TRANSITION_TIME = 4000;
+	static constexpr int MAX_DIVING_ENEMIES = 2;
+	static constexpr int DESTINATION_VARIANCE = 150;
 
 	//game object textures
 	MyTexture playerTexture;

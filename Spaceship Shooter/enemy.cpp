@@ -12,17 +12,22 @@ Enemy::Enemy() {
 	resetDiveRects();
 }
 
+Enemy::~Enemy() {
+	if (shot == nullptr)
+		delete shot;
+}
+
 void Enemy::shoot() {
 	int die;
 
 	die = rand() % 2000;
 	if (status == ALIVE && shot == nullptr) {
 		if(enemyType == EASY && die == 0)
-			shot = new EnemyProjectile(posX + ENEMY_WIDTH / 2, posY + ENEMY_HEIGHT + 2, EASY_ENEMY_PROJ_VEL);
+			shot = new EnemyProjectile(posX + App::ENEMY_WIDTH / 2, posY + App::ENEMY_HEIGHT + 2, EASY_ENEMY_PROJ_VEL);
 		else if (enemyType == MEDIUM && die <= 1)
-			shot = new EnemyProjectile(posX + ENEMY_WIDTH / 2, posY + ENEMY_HEIGHT + 2, MEDIUM_ENEMY_PROJ_VEL);
+			shot = new EnemyProjectile(posX + App::ENEMY_WIDTH / 2, posY + App::ENEMY_HEIGHT + 2, MEDIUM_ENEMY_PROJ_VEL);
 		else if (enemyType == HARD && die <= 3)
-			shot = new EnemyProjectile(posX + ENEMY_WIDTH / 2, posY + ENEMY_HEIGHT + 2, HARD_ENEMY_PROJ_VEL);
+			shot = new EnemyProjectile(posX + App::ENEMY_WIDTH / 2, posY + App::ENEMY_HEIGHT + 2, HARD_ENEMY_PROJ_VEL);
 	}
 }
 
@@ -69,13 +74,13 @@ void Enemy::move(App& app) {
 				if (posX < endLocation.x) {
 					switch (enemyType) {
 					case EASY:
-						velX = EASY_ENEMY_VEL;
+						velX = App::EASY_ENEMY_VEL;
 						break;
 					case MEDIUM:
-						velX = MEDIUM_ENEMY_VEL;
+						velX = App::MEDIUM_ENEMY_VEL;
 						break;
 					case HARD:
-						velX = HARD_ENEMY_VEL;
+						velX = App::HARD_ENEMY_VEL;
 						break;
 					}
 				}
@@ -86,13 +91,13 @@ void Enemy::move(App& app) {
 				if (posX >= endLocation.x) {
 					switch (enemyType) {
 					case EASY:
-						velX = -EASY_ENEMY_VEL;
+						velX = -App::EASY_ENEMY_VEL;
 						break;
 					case MEDIUM:
-						velX = -MEDIUM_ENEMY_VEL;
+						velX = -App::MEDIUM_ENEMY_VEL;
 						break;
 					case HARD:
-						velX = -HARD_ENEMY_VEL;
+						velX = -App::HARD_ENEMY_VEL;
 						break;
 					}
 				}
@@ -105,13 +110,13 @@ void Enemy::move(App& app) {
 				if (posX > startLocation.x) {
 					switch (enemyType) {
 					case EASY:
-						velX = -EASY_ENEMY_VEL;
+						velX = -App::EASY_ENEMY_VEL;
 						break;
 					case MEDIUM:
-						velX = -MEDIUM_ENEMY_VEL;
+						velX = -App::MEDIUM_ENEMY_VEL;
 						break;
 					case HARD:
-						velX = -HARD_ENEMY_VEL;
+						velX = -App::HARD_ENEMY_VEL;
 						break;
 					}
 				}
@@ -122,13 +127,13 @@ void Enemy::move(App& app) {
 				if (posX < startLocation.x) {
 					switch (enemyType) {
 					case EASY:
-						velX = EASY_ENEMY_VEL;
+						velX = App::EASY_ENEMY_VEL;
 						break;
 					case MEDIUM:
-						velX = MEDIUM_ENEMY_VEL;
+						velX = App::MEDIUM_ENEMY_VEL;
 						break;
 					case HARD:
-						velX = HARD_ENEMY_VEL;
+						velX = App::HARD_ENEMY_VEL;
 						break;
 					}
 				}
@@ -169,8 +174,8 @@ void Enemy::setParameters(int x, int y) {
 	posY = y;
 	collider.x = x;
 	collider.y = y;
-	collider.w = ENEMY_WIDTH;
-	collider.h = ENEMY_HEIGHT;
+	collider.w = App::ENEMY_WIDTH;
+	collider.h = App::ENEMY_HEIGHT;
 }
 
 void Enemy::setVelocity(int xVel, int yVel) {

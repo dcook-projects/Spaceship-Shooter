@@ -19,6 +19,7 @@ public:
 	} status;
 
 	Enemy();
+	~Enemy();
 	void shoot();
 	void render(App& app);
 	void move(App& app);
