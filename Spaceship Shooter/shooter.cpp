@@ -239,8 +239,9 @@ int main(int argc, char* argv[]) {
 	SDL_Event e;
 	App app;
 	ParticleEngine starBackground(app);		//creates the background stars
-	Uint32 previousTime = 0, currentTime; //used to calculate time intervals for the player firing
-	Uint32 startTime, frameTime;   //used to calculate frame rate
+	Stopwatch playerFireTimer;		//used to calculate time intervals for the player firing
+	Stopwatch frameTimer;   //used to calculate frame rate
+	Uint32 frameTime;
 	Stopwatch transitionTimer;  //used to keep track of how long the game is betweeen levels
 	Stopwatch lifeLostTimer;	//used to keep track of how much time passed once the player lost a life
 	
@@ -255,30 +256,34 @@ int main(int argc, char* argv[]) {
 	//play the music
 	Mix_PlayMusic(app.music, -1);
 
+	//start the initial player fire timer
+	playerFireTimer.start();
+
 	while (!quit) {
-		startTime = SDL_GetTicks();
+		frameTimer.start();
 
 		while (SDL_PollEvent(&e) != 0) {
 			if (e.type == SDL_QUIT)
 				quit = true;
-			//handle the pause button
+			//handle the pause button--this also pauses and unpauses the player fire timer
 			else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN) {
 				if (app.status == RUNNING) {
 					app.status = PAUSED;
+					playerFireTimer.pause();
 					Mix_PauseMusic();
 				}
 				else if(app.status == PAUSED) {
 					app.status = RUNNING;
+					playerFireTimer.unpause();
 					Mix_ResumeMusic();
 				}
 			}
 			//handle the player firing--player will fire if enough time has elapsed since the last shot
 			else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_SPACE) {  
 				if (app.status == RUNNING) {
-					currentTime = SDL_GetTicks();
-					if (currentTime > previousTime + App::TIME_BETWEEN_SHOTS) {
+					if (playerFireTimer.getTicks() > App::TIME_BETWEEN_SHOTS) {
 						app.player.shoot();
-						previousTime = currentTime;
+						playerFireTimer.start();
 					}
 				}
 			}
@@ -394,9 +399,6 @@ int main(int argc, char* argv[]) {
 		//Update screen
 		SDL_RenderPresent(app.renderer);
 
-		frameTime = SDL_GetTicks() - startTime;
-		if(frameTime < App::MS_PER_FRAME)
-			SDL_Delay(App::MS_PER_FRAME - frameTime);
 
 		//create the next level and wait a few seconds
 		if (app.status == TRANSITION) {
@@ -410,6 +412,11 @@ int main(int argc, char* argv[]) {
 				app.status = RUNNING;
 			}
 		}
+
+		//calculate frame time and wait the appropriate amount of time for the specified frame rate
+		frameTime = frameTimer.getTicks();
+		if (frameTime < App::MS_PER_FRAME)
+			SDL_Delay(App::MS_PER_FRAME - frameTime);
 	}
 
 	Mix_HaltMusic();
