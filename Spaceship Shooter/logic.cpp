@@ -1,6 +1,10 @@
 #include "logic.h"
 #include "app.h"
 
+/*
+ *	This goes through the enemy field in app and initializes them based on the passed in char[][]. The enemies
+ *	are centered on the screen.
+ */
 void setEnemyPlacement(App& app, char enemyMap[App::MAX_ENEMY_ROWS][App::MAX_ENEMY_COLUMNS]) {
 	static constexpr int ENEMY_GAP = 10;
 	static constexpr int ENEMY_FIELD_WIDTH = App::MAX_ENEMY_COLUMNS * App::ENEMY_WIDTH + (App::MAX_ENEMY_COLUMNS - 1) * ENEMY_GAP;
@@ -32,6 +36,7 @@ void setEnemyPlacement(App& app, char enemyMap[App::MAX_ENEMY_ROWS][App::MAX_ENE
 	}
 }
 
+//checks if all enemies are dead, so the next level can be loaded or game ended
 bool isBoardEmpty(App& app) {
 	for (int row = 0; row < App::MAX_ENEMY_ROWS; ++row) 
 		for (int column = 0; column < App::MAX_ENEMY_COLUMNS; ++column) 
@@ -41,6 +46,7 @@ bool isBoardEmpty(App& app) {
 	return true;
 }
 
+//code that executes when the player collides with an enemy or an enemy shot
 void lifeLost(App& app) {
 	--app.numLives;
 
@@ -48,11 +54,12 @@ void lifeLost(App& app) {
 		gameOver(app);
 }
 
+//code that executes when all lives are lost or the player beats all the levels
 void gameOver(App& app) {
 	app.status = GAME_OVER;
 }
 
-//this moves all the enemy shots off screen, so they can be destrotyed later
+//this moves all the enemy shots off screen, so they can be destroyed later
 void clearEnemyShots(App& app) {
 	for (int row = 0; row < App::MAX_ENEMY_ROWS; ++row) {
 		for (int column = 0; column < App::MAX_ENEMY_COLUMNS; ++column) {
@@ -63,21 +70,21 @@ void clearEnemyShots(App& app) {
 
 void createFirstLevel(App& app) {
 	char enemyMap[App::MAX_ENEMY_ROWS][App::MAX_ENEMY_COLUMNS] = {		{'\0', '\0', '\0', 'h', 'h', 'h', 'h', '\0', '\0', '\0'},
-																{'\0', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', '\0'},
-																{'\0', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', '\0'},
-																{'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'},
-																{'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'}
-	};
+																		{'\0', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', '\0'},
+																		{'\0', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', '\0'},
+																		{'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'},
+																		{'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'}
+	};																	// \0 = no enemy in that spot, h = hard enemy, m = medium enemy, e = easy enemy
 
 	setEnemyPlacement(app, enemyMap);
 }
 
 void createSecondLevel(App& app) {
 	char enemyMap[App::MAX_ENEMY_ROWS][App::MAX_ENEMY_COLUMNS] = {		{'\0', '\0', 'h', 'h', 'h', 'h', 'h', 'h', '\0', '\0'},
-																{'m', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm'},
-																{'m', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm'},
-																{'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'},
-																{'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'}
+																		{'m', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm'},
+																		{'m', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm'},
+																		{'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'},
+																		{'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'}
 	};
 
 	setEnemyPlacement(app, enemyMap);
@@ -85,10 +92,10 @@ void createSecondLevel(App& app) {
 
 void createThirdLevel(App& app) {
 	char enemyMap[App::MAX_ENEMY_ROWS][App::MAX_ENEMY_COLUMNS] = {		{'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h'},
-																{'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h'},
-																{'m', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm'},
-																{'m', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm'},
-																{'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'}
+																		{'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h'},
+																		{'m', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm'},
+																		{'m', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm'},
+																		{'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'}
 	};
 
 	setEnemyPlacement(app, enemyMap);
@@ -96,10 +103,10 @@ void createThirdLevel(App& app) {
 
 void createFourthLevel(App& app) {
 	char enemyMap[App::MAX_ENEMY_ROWS][App::MAX_ENEMY_COLUMNS] = {		{'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h'},
-																{'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h'},
-																{'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h'},
-																{'m', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm'},
-																{'m', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm'}
+																		{'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h'},
+																		{'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h'},
+																		{'m', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm'},
+																		{'m', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm', 'm'}
 	};
 
 	setEnemyPlacement(app, enemyMap);
@@ -107,10 +114,10 @@ void createFourthLevel(App& app) {
 
 void createFifthLevel(App& app) {
 	char enemyMap[App::MAX_ENEMY_ROWS][App::MAX_ENEMY_COLUMNS] = {		{'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h'},
-																{'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h'},
-																{'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h'},
-																{'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h'},
-																{'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h'}
+																		{'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h'},
+																		{'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h'},
+																		{'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h'},
+																		{'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h', 'h'}
 	};
 
 	setEnemyPlacement(app, enemyMap);

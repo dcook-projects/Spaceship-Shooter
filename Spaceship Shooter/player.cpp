@@ -100,13 +100,9 @@ void Player::render(App& app) {
 }
 
 //moves all player shots off screen
-void Player::clearShots() {
+void Player::clearShots() const {
     for (auto it = playerShots.begin(); it != playerShots.end(); ++it) 
         (*it)->killShot();
-}
-
-int Player::getXPosition() const {
-    return posX;
 }
 
 void Player::setXPosition(int x) {

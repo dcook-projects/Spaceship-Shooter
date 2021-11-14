@@ -21,7 +21,7 @@ Particle::Particle(App& app, int x, int y) {
 }
 
 //a star is dead if it goes below the screen
-bool Particle::isDead() {
+bool Particle::isDead() const {
 	if (posY > App::SCREEN_HEIGHT)
 		return true;
 	else
@@ -32,6 +32,6 @@ void Particle::move() {
 	posY += STAR_VELOCITY;
 }
 
-void Particle::render(App& app) {
+void Particle::render(App& app) const {
 	texture->render(app, posX, posY);
 }

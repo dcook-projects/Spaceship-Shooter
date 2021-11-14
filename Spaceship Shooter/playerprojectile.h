@@ -10,9 +10,9 @@ public:
 	PlayerProjectile(int playerXPos, int playerWidth, int playerHeight);
 
 	void move(App& app);
-	void render(App& app);
+	void render(App& app) const;
 	SDL_Rect getCollider() const;
-	bool isDead();
+	bool isDead() const;
 	void killShot();
 private:
 	//projectile attributes

@@ -15,7 +15,7 @@ MyTexture::~MyTexture() {
 	free();
 }
 
-void MyTexture::setAlpha(unsigned int alpha) {
+void MyTexture::setAlpha(unsigned int alpha) const {
 	SDL_SetTextureAlphaMod(texture, alpha);
 }
 
@@ -89,8 +89,7 @@ void MyTexture::free() {
 	}
 }
 
-void MyTexture::render(App& app, int x, int y, SDL_Rect* clip) 
-{
+void MyTexture::render(App& app, int x, int y, SDL_Rect* clip) const {
 	//Set rendering space and render to screen
 	SDL_Rect renderQuad = { x, y, width, height };
 
@@ -105,18 +104,15 @@ void MyTexture::render(App& app, int x, int y, SDL_Rect* clip)
 	SDL_RenderCopy(app.renderer, texture, clip, &renderQuad);
 }
 
-void MyTexture::render(App& app, const SDL_Rect& renderQuad, SDL_Rect* clip)
-{
+void MyTexture::render(App& app, const SDL_Rect& renderQuad, SDL_Rect* clip) const {
 	//Render to screen
 	SDL_RenderCopy(app.renderer, texture, clip, &renderQuad);
 }
 
-int MyTexture::getWidth()
-{
+int MyTexture::getWidth() const {
 	return width;
 }
 
-int MyTexture::getHeight()
-{
+int MyTexture::getHeight() const {
 	return height;
 }

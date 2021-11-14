@@ -7,9 +7,9 @@ class EnemyProjectile {
 public:
 	EnemyProjectile(int x, int y, int velocity);
 	void move();
-	void render(App& app);
+	void render(App& app) const;
 	void killShot();
-	bool isDead();
+	bool isDead() const;
 	SDL_Rect getCollider() const;
 private:
 	//projectile attributes

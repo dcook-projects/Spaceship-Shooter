@@ -20,7 +20,7 @@ ParticleEngine::~ParticleEngine() {
 	}
 }
 
-void ParticleEngine::moveStars() {
+void ParticleEngine::moveStars() const {
 	for (Particle* p : stars)
 		p->move();
 }

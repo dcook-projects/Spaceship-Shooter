@@ -10,7 +10,7 @@ public:
 	ParticleEngine(App &app);
 	~ParticleEngine();
 
-	void moveStars();
+	void moveStars() const;
 	void renderStars(App& app);
 private:
 	std::vector<Particle *> stars;

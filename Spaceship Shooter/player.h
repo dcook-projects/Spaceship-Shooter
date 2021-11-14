@@ -13,15 +13,13 @@ public:
 	~Player();
 
 	void handleMoveEvent(SDL_Event& e);
-	void handleFireEvent(SDL_Event& e);
 	void move(App& app);
 	void render(App& app);
 	void initialize();
 	void shoot();
-	int getXPosition() const;
 	void setXPosition(int x);
 	SDL_Rect getCollider() const;
-	void clearShots();
+	void clearShots() const;
 
 	int getVelocityX() {
 		return velX;

@@ -24,7 +24,7 @@ public:
 	void render(App& app);
 	void move(App& app);
 	void setParameters(int x, int y);
-	void clearShot();
+	void clearShot() const;
 	void setDiveLocations(App& app, SDL_Rect startingLocation, SDL_Rect destination);
 	void setVelocity();
 	void resetVelocity();

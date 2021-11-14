@@ -39,7 +39,8 @@ void Stopwatch::unpause() {
 	}
 }
 
-Uint32 Stopwatch::getTicks() {
+//returns the actual time on the stopwatch (in milliseconds)
+Uint32 Stopwatch::getTicks() const {
 	Uint32 time = 0;
 
 	if (started) {

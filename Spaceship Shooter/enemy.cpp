@@ -199,7 +199,7 @@ void Enemy::resetVelocity() {
 }
 
 //immediately send the shot off screen, so it can be destroyed later
-void Enemy::clearShot() {
+void Enemy::clearShot() const {
 	if (shot != nullptr)
 		shot->killShot();
 }

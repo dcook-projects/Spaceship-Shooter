@@ -13,7 +13,7 @@ EnemyProjectile::EnemyProjectile(int x, int y, int velocity) {
 	collider.h = ENEMY_PROJ_HEIGHT;
 }
 
-bool EnemyProjectile::isDead() {
+bool EnemyProjectile::isDead() const {
 	if (posY > App::SCREEN_HEIGHT)
 		return true;
 	else
@@ -24,7 +24,7 @@ SDL_Rect EnemyProjectile::getCollider() const {
 	return collider;
 }
 
-void EnemyProjectile::render(App& app) {
+void EnemyProjectile::render(App& app) const {
 	app.enemyProjectileTexture.render(app, collider);
 }
 

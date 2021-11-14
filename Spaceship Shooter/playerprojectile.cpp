@@ -16,9 +16,11 @@ void PlayerProjectile::move(App& app) {
 	posY += velY;
 	collider.y += velY;
 
+	//check if the player hit an enemy every time a player shot moves
 	if (checkPlayerShotCollisionWithEnemy(app, getCollider())) {
 		killShot();
 
+		//check if all enemy ships are destroyed
 		if (isBoardEmpty(app)) {
 			++app.currentLevel;
 			app.player.clearShots();
@@ -33,7 +35,7 @@ void PlayerProjectile::move(App& app) {
 	}
 }
 
-void PlayerProjectile::render(App& app) {
+void PlayerProjectile::render(App& app) const {
 	app.playerProjectileTexture.render(app, collider);
 }
 
@@ -42,7 +44,7 @@ SDL_Rect PlayerProjectile::getCollider() const {
 }
 
 //returns true of the projectile flies past the top of the screen
-bool PlayerProjectile::isDead() {
+bool PlayerProjectile::isDead() const {
 	if (posY < 0)
 		return true;
 	else

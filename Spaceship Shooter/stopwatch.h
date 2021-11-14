@@ -10,9 +10,7 @@ public:
     void stop();
     void pause();
     void unpause();
-
-    //Gets the timer's time
-    Uint32 getTicks();
+    Uint32 getTicks() const;
 
     bool isStarted() { return started; }
     bool isPaused() { return paused; }
