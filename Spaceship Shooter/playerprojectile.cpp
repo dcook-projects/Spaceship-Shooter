@@ -2,9 +2,9 @@
 #include "app.h"
 #include "logic.h"
 
-PlayerProjectile::PlayerProjectile(int playerXPos) {
-	posX = playerXPos + (App::PLAYER_WIDTH / 2);
-	posY = App::SCREEN_HEIGHT - App::PLAYER_HEIGHT - PLAYER_PROJ_HEIGHT - 2;
+PlayerProjectile::PlayerProjectile(int playerXPos, int playerWidth, int playerHeight) {
+	posX = playerXPos + (playerWidth / 2);
+	posY = App::SCREEN_HEIGHT - playerHeight - PLAYER_PROJ_HEIGHT - 2;
 	velY = -PLAYER_PROJECTILE_VEL;
 	collider.x = posX;
 	collider.y = posY;

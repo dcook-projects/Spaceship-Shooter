@@ -74,13 +74,13 @@ void Enemy::move(App& app) {
 				if (posX < endLocation.x) {
 					switch (enemyType) {
 					case EASY:
-						velX = App::EASY_ENEMY_VEL;
+						velX = EASY_ENEMY_VEL;
 						break;
 					case MEDIUM:
-						velX = App::MEDIUM_ENEMY_VEL;
+						velX = MEDIUM_ENEMY_VEL;
 						break;
 					case HARD:
-						velX = App::HARD_ENEMY_VEL;
+						velX = HARD_ENEMY_VEL;
 						break;
 					}
 				}
@@ -91,13 +91,13 @@ void Enemy::move(App& app) {
 				if (posX >= endLocation.x) {
 					switch (enemyType) {
 					case EASY:
-						velX = -App::EASY_ENEMY_VEL;
+						velX = -EASY_ENEMY_VEL;
 						break;
 					case MEDIUM:
-						velX = -App::MEDIUM_ENEMY_VEL;
+						velX = -MEDIUM_ENEMY_VEL;
 						break;
 					case HARD:
-						velX = -App::HARD_ENEMY_VEL;
+						velX = -HARD_ENEMY_VEL;
 						break;
 					}
 				}
@@ -110,13 +110,13 @@ void Enemy::move(App& app) {
 				if (posX > startLocation.x) {
 					switch (enemyType) {
 					case EASY:
-						velX = -App::EASY_ENEMY_VEL;
+						velX = -EASY_ENEMY_VEL;
 						break;
 					case MEDIUM:
-						velX = -App::MEDIUM_ENEMY_VEL;
+						velX = -MEDIUM_ENEMY_VEL;
 						break;
 					case HARD:
-						velX = -App::HARD_ENEMY_VEL;
+						velX = -HARD_ENEMY_VEL;
 						break;
 					}
 				}
@@ -127,13 +127,13 @@ void Enemy::move(App& app) {
 				if (posX < startLocation.x) {
 					switch (enemyType) {
 					case EASY:
-						velX = App::EASY_ENEMY_VEL;
+						velX = EASY_ENEMY_VEL;
 						break;
 					case MEDIUM:
-						velX = App::MEDIUM_ENEMY_VEL;
+						velX = MEDIUM_ENEMY_VEL;
 						break;
 					case HARD:
-						velX = App::HARD_ENEMY_VEL;
+						velX = HARD_ENEMY_VEL;
 						break;
 					}
 				}
@@ -178,9 +178,24 @@ void Enemy::setParameters(int x, int y) {
 	collider.h = App::ENEMY_HEIGHT;
 }
 
-void Enemy::setVelocity(int xVel, int yVel) {
-	velX = xVel;
-	velY = yVel;
+//sets the velocity of an enemy when beginning a dive
+void Enemy::setVelocity() {
+	switch (enemyType) {
+	case EASY:
+		velY = EASY_ENEMY_VEL;
+		break;
+	case MEDIUM:
+		velY = MEDIUM_ENEMY_VEL;
+		break;
+	case HARD:
+		velY = HARD_ENEMY_VEL;
+		break;
+	}
+}
+
+void Enemy::resetVelocity() {
+	velX = 0;
+	velY = 0;
 }
 
 //immediately send the shot off screen, so it can be destroyed later

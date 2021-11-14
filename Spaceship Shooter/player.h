@@ -28,7 +28,11 @@ public:
 	}
 
 private:
+	//player ship attributes
 	static constexpr int PLAYER_VEL = 7;
+	static constexpr int PLAYER_WIDTH = 50;
+	static constexpr int PLAYER_HEIGHT = 50;
+
 	SDL_Rect collider;
 	int posX, posY;
 	int velX, velY;

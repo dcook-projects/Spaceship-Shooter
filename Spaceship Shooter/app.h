@@ -29,9 +29,7 @@ struct App {
 	static constexpr int SCREEN_WIDTH = 775;
 	static constexpr int SCREEN_HEIGHT = 900;
 
-	//player and enemy dimensions
-	static constexpr int PLAYER_WIDTH = 50;
-	static constexpr int PLAYER_HEIGHT = 50;
+	//enemy ship dimensions
 	static constexpr int ENEMY_WIDTH = 35;
 	static constexpr int ENEMY_HEIGHT = 35;
 
@@ -39,15 +37,10 @@ struct App {
 	static constexpr int MAX_ENEMY_ROWS = 5;
 	static constexpr int MAX_ENEMY_COLUMNS = 10;
 
-	//object velocities
-	static constexpr int EASY_ENEMY_VEL = 4;
-	static constexpr int MEDIUM_ENEMY_VEL = 5;
-	static constexpr int HARD_ENEMY_VEL = 6;
-
 	//other game constants
 	static constexpr int FRAME_RATE = 60;
 	static constexpr int MS_PER_FRAME = 1000 / FRAME_RATE;
-	static constexpr int TIME_BETWEEN_SHOTS = 500;
+	static constexpr int TIME_BETWEEN_SHOTS = 100;
 	static constexpr int TRANSITION_TIME = 4000;
 	static constexpr int MAX_DIVING_ENEMIES = 2;
 	static constexpr int DESTINATION_VARIANCE = 150;

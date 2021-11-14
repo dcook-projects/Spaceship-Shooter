@@ -14,13 +14,13 @@ Player::~Player() {
 
 //set the initial status of the Player
 void Player::initialize() {
-    posX = (App::SCREEN_WIDTH - App::PLAYER_WIDTH) / 2;
-    posY = App::SCREEN_HEIGHT - App::PLAYER_HEIGHT - 5;
+    posX = (App::SCREEN_WIDTH - PLAYER_WIDTH) / 2;
+    posY = App::SCREEN_HEIGHT - PLAYER_HEIGHT - 5;
 
     collider.x = posX;
     collider.y = posY;
-    collider.w = App::PLAYER_WIDTH;
-    collider.h = App::PLAYER_HEIGHT;
+    collider.w = PLAYER_WIDTH;
+    collider.h = PLAYER_HEIGHT;
 }
 
 // This sets the Player's X velocity constant on arrow key down, and sets it to 0 on arrow key up
@@ -59,7 +59,7 @@ void Player::move(App& app) {
 
 
         //If the Player went too far to the left or right
-        if ((posX < 0) || (posX + App::PLAYER_WIDTH > App::SCREEN_WIDTH))
+        if ((posX < 0) || (posX + PLAYER_WIDTH > App::SCREEN_WIDTH))
         {
             posX -= velX;
             collider.x -= velX;
@@ -122,5 +122,5 @@ SDL_Rect Player::getCollider() const {
 
 //adds a new shot to the list of player shots
 void Player::shoot() {
-    playerShots.push_back(new PlayerProjectile(posX));
+    playerShots.push_back(new PlayerProjectile(posX, PLAYER_WIDTH, PLAYER_HEIGHT));
 }

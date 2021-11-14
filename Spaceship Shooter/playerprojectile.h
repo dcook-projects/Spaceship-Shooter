@@ -7,7 +7,7 @@ struct App;
 
 class PlayerProjectile {
 public:
-	PlayerProjectile(int playerXPos);
+	PlayerProjectile(int playerXPos, int playerWidth, int playerHeight);
 
 	void move(App& app);
 	void render(App& app);

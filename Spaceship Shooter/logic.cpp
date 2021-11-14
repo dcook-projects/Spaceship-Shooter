@@ -163,7 +163,7 @@ bool checkPlayerShotCollisionWithEnemy(App& app, SDL_Rect collider) {
 
 				//reduce the total number of enemies moving if one was shot in the middle of a dive
 				if (app.enemies[row][column].getYVelocity() != 0 || app.enemies[row][column].getXVelocity() != 0) {
-					app.enemies[row][column].setVelocity(0, 0);
+					app.enemies[row][column].resetVelocity();
 					--app.numEnemiesMoving;
 				}
 

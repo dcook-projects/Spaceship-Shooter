@@ -299,7 +299,7 @@ int main(int argc, char* argv[]) {
 				for (int row = 0; row < App::MAX_ENEMY_ROWS; ++row)
 					for (int col = 0; col < App::MAX_ENEMY_COLUMNS; ++col) {
 						app.enemies[row][col].resetDiveRects();
-						app.enemies[row][col].setVelocity(0, 0);
+						app.enemies[row][col].resetVelocity();
 					}
 			}
 
@@ -348,18 +348,7 @@ int main(int argc, char* argv[]) {
 
 				//make sure the randomly chosen enemy is alive and not moving
 				if (app.enemies[row][col].status == Enemy::ALIVE && app.enemies[row][col].getYVelocity() == 0) {
-					switch (app.enemies[row][col].enemyType) {
-					case Enemy::HARD:
-						app.enemies[row][col].setVelocity(0, App::HARD_ENEMY_VEL);
-						break;
-					case Enemy::MEDIUM:
-						app.enemies[row][col].setVelocity(0, App::MEDIUM_ENEMY_VEL);
-						break;
-					case Enemy::EASY:
-						app.enemies[row][col].setVelocity(0, App::EASY_ENEMY_VEL);
-						break;
-					}
-
+					app.enemies[row][col].setVelocity();
 					app.enemies[row][col].setDiveLocations(app, app.enemies[row][col].getCollider(), diveDestination);
 					++app.numEnemiesMoving;
 				}
@@ -402,10 +391,10 @@ int main(int argc, char* argv[]) {
 
 		//create the next level and wait a few seconds
 		if (app.status == TRANSITION) {
-			if(!transitionTimer.isStarted())
+			if (!transitionTimer.isStarted()) {
 				transitionTimer.start();
-
-			createLevels(app);
+				createLevels(app);
+			}
 
 			if (transitionTimer.getTicks() >= App::TRANSITION_TIME) {
 				transitionTimer.stop();

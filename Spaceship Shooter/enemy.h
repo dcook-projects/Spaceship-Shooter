@@ -26,7 +26,8 @@ public:
 	void setParameters(int x, int y);
 	void clearShot();
 	void setDiveLocations(App& app, SDL_Rect startingLocation, SDL_Rect destination);
-	void setVelocity(int xVel, int yVel);
+	void setVelocity();
+	void resetVelocity();
 	void resetDiveRects();
 	int getXVelocity() const { return velX; }
 	int getYVelocity() const { return velY; }
@@ -38,6 +39,11 @@ private:
 	static constexpr int EASY_ENEMY_PROJ_VEL = 7;
 	static constexpr int MEDIUM_ENEMY_PROJ_VEL = 9;
 	static constexpr int HARD_ENEMY_PROJ_VEL = 10;
+
+	//enemy ship velocities
+	static constexpr int EASY_ENEMY_VEL = 4;
+	static constexpr int MEDIUM_ENEMY_VEL = 5;
+	static constexpr int HARD_ENEMY_VEL = 6;
 
 	SDL_Rect collider;
 	EnemyProjectile* shot;
