@@ -79,8 +79,6 @@ void Player::move(App& app) {
             app.status = LIFE_RECENTLY_LOST;
             this->setXPosition(App::SCREEN_WIDTH + 500);
         }
-        
-        clearEnemyShots(app);
     }
 }
 

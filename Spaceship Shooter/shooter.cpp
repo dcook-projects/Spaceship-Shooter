@@ -234,7 +234,6 @@ void renderInfo(App& app) {
 int main(int argc, char* argv[]) {
 	srand(time(nullptr));
 
-
 	bool quit = false, firstLevelNotCreated = true;		//flags
 	SDL_Event e;
 	App app;
@@ -295,6 +294,8 @@ int main(int argc, char* argv[]) {
 				app.numEnemiesMoving = 0;
 				createLevels(app);
 				app.status = TRANSITION;
+				app.player.clearShots();
+				clearEnemyShots(app);
 
 				for (int row = 0; row < App::MAX_ENEMY_ROWS; ++row)
 					for (int col = 0; col < App::MAX_ENEMY_COLUMNS; ++col) {
@@ -324,7 +325,6 @@ int main(int argc, char* argv[]) {
 		}
 
 		if (app.status == RUNNING || app.status == TRANSITION || app.status == LIFE_RECENTLY_LOST) {
-			//move player
 			app.player.move(app);
 		}
 
@@ -394,6 +394,7 @@ int main(int argc, char* argv[]) {
 			if (!transitionTimer.isStarted()) {
 				transitionTimer.start();
 				createLevels(app);
+				clearEnemyShots(app);
 			}
 
 			if (transitionTimer.getTicks() >= App::TRANSITION_TIME) {

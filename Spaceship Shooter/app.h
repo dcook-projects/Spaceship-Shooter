@@ -40,7 +40,7 @@ struct App {
 	//other game constants
 	static constexpr int FRAME_RATE = 60;
 	static constexpr int MS_PER_FRAME = 1000 / FRAME_RATE;
-	static constexpr int TIME_BETWEEN_SHOTS = 100;
+	static constexpr int TIME_BETWEEN_SHOTS = 500;
 	static constexpr int TRANSITION_TIME = 4000;
 	static constexpr int MAX_DIVING_ENEMIES = 2;
 	static constexpr int DESTINATION_VARIANCE = 150;
