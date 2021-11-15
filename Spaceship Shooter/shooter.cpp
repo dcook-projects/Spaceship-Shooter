@@ -349,7 +349,7 @@ int main(int argc, char* argv[]) {
 				//make sure the randomly chosen enemy is alive and not moving
 				if (app.enemies[row][col].status == Enemy::ALIVE && app.enemies[row][col].getYVelocity() == 0) {
 					app.enemies[row][col].setVelocity();
-					app.enemies[row][col].setDiveLocations(app, app.enemies[row][col].getCollider(), diveDestination);
+					app.enemies[row][col].setDiveLocations(app.enemies[row][col].getCollider(), diveDestination);
 					++app.numEnemiesMoving;
 				}
 			}
@@ -359,7 +359,7 @@ int main(int argc, char* argv[]) {
 		if (app.status == RUNNING || app.status == LIFE_RECENTLY_LOST) {
 			for (int row = 0; row < App::MAX_ENEMY_ROWS; ++row)
 				for (int col = 0; col < App::MAX_ENEMY_COLUMNS; ++col) {
-					app.enemies[row][col].move(app);
+					app.enemies[row][col].move(&(app.numEnemiesMoving));
 					if(app.status == RUNNING)
 						app.enemies[row][col].shoot();
 				}

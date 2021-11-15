@@ -53,7 +53,7 @@ void Enemy::render(App& app) {
 	}
 }
 
-void Enemy::move(App& app) {
+void Enemy::move(int *numEnemiesMoving) {
 	int midpoint;
 
 	posX += velX;
@@ -160,7 +160,7 @@ void Enemy::move(App& app) {
 		posY = startLocation.y;
 		collider.y = posY;
 
-		--app.numEnemiesMoving;
+		--(*numEnemiesMoving);
 		resetDiveRects();
 	}
 
@@ -204,7 +204,7 @@ void Enemy::clearShot() const {
 		shot->killShot();
 }
 
-void Enemy::setDiveLocations(App& app, SDL_Rect startLocation, SDL_Rect destination) {
+void Enemy::setDiveLocations(SDL_Rect startLocation, SDL_Rect destination) {
 	this->startLocation = startLocation;
 	this->endLocation = destination;
 }

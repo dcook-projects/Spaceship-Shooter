@@ -47,7 +47,7 @@ bool isBoardEmpty(App& app) {
 }
 
 //code that executes when the player collides with an enemy or an enemy shot
-void lifeLost(App& app) {
+void lifeLost(App &app) {
 	--app.numLives;
 
 	if (app.numLives == 0)

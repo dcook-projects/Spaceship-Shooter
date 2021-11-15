@@ -22,10 +22,10 @@ public:
 	~Enemy();
 	void shoot();
 	void render(App& app);
-	void move(App& app);
+	void move(int *numEnemiesMoving);
 	void setParameters(int x, int y);
 	void clearShot() const;
-	void setDiveLocations(App& app, SDL_Rect startingLocation, SDL_Rect destination);
+	void setDiveLocations(SDL_Rect startingLocation, SDL_Rect destination);
 	void setVelocity();
 	void resetVelocity();
 	void resetDiveRects();
