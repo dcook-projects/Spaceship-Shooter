@@ -1,6 +1,7 @@
 #include "player.h"
 #include "app.h"
 #include "logic.h"
+#include "stopwatch.h"
 
 Player::Player() {
     velX = 0;
@@ -47,6 +48,18 @@ void Player::handleMoveEvent(SDL_Event& e) {
         case SDLK_RIGHT:
             velX -= PLAYER_VEL;
             break;
+        }
+    }
+}
+
+//handle the player firing--player will fire if enough time has elapsed since the last shot
+void Player::handleFireEvent(App& app, SDL_Event& e, Stopwatch& playerFireTimer) {
+    if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_SPACE) {
+        if (app.status == RUNNING) {
+            if (playerFireTimer.getTicks() > App::TIME_BETWEEN_SHOTS) {
+                this->shoot();
+                playerFireTimer.start();
+            }
         }
     }
 }

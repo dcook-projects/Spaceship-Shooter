@@ -8,6 +8,7 @@
 #include "enemy.h"
 #include "particleengine.h"
 
+//tracks the status that the game is currently in
 enum Game_Status {
 	PAUSED,
 	RUNNING,
@@ -19,9 +20,7 @@ enum Game_Status {
 struct App {
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
-
 	TTF_Font* font = nullptr;
-
 	Mix_Music* music = nullptr;
 
 	/* GAME CONSTANTS*/

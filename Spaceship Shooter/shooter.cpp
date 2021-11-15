@@ -79,12 +79,12 @@ bool loadMedia(App& app) {
 	}
 
 	if (!app.mediumEnemyTexture.loadFromFile(app, "assets/mediumenemy.png")) {
-		printf("failed to load easy enemy texture\n");
+		printf("failed to load medium enemy texture\n");
 		return false;
 	}
 
 	if (!app.hardEnemyTexture.loadFromFile(app, "assets/hardenemy.png")) {
-		printf("failed to load easy enemy texture\n");
+		printf("failed to load hard enemy texture\n");
 		return false;
 	}
 
@@ -149,7 +149,7 @@ bool loadMedia(App& app) {
 	//load the music
 	app.music = Mix_LoadMUS("assets/Warp_Drive_1.mp3");
 	if (app.music == nullptr) {
-		printf("Failed to load beat music! SDL_mixer Error: %s\n", Mix_GetError());
+		printf("Failed to load music. SDL_mixer Error: %s\n", Mix_GetError());
 		return false;
 	}
 
@@ -204,6 +204,7 @@ void close(App& app) {
 	SDL_Quit();
 }
 
+//draws the text that displayes the information on the current level, the number of player lives, and the score
 void renderInfo(App& app) {
 	std::stringstream currentDisplay;
 
@@ -234,7 +235,7 @@ void renderInfo(App& app) {
 int main(int argc, char* argv[]) {
 	srand(time(nullptr));
 
-	bool quit = false, firstLevelNotCreated = true;		//flags
+	bool quit = false;		//flags
 	SDL_Event e;
 	App app;
 	ParticleEngine starBackground(app);		//creates the background stars
@@ -261,134 +262,6 @@ int main(int argc, char* argv[]) {
 	while (!quit) {
 		frameTimer.start();
 
-		while (SDL_PollEvent(&e) != 0) {
-			if (e.type == SDL_QUIT)
-				quit = true;
-			//handle the pause button--this also pauses and unpauses the player fire timer
-			else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN) {
-				if (app.status == RUNNING) {
-					app.status = PAUSED;
-					playerFireTimer.pause();
-					Mix_PauseMusic();
-				}
-				else if(app.status == PAUSED) {
-					app.status = RUNNING;
-					playerFireTimer.unpause();
-					Mix_ResumeMusic();
-				}
-			}
-			//handle the player firing--player will fire if enough time has elapsed since the last shot
-			else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_SPACE) {  
-				if (app.status == RUNNING) {
-					if (playerFireTimer.getTicks() > App::TIME_BETWEEN_SHOTS) {
-						app.player.shoot();
-						playerFireTimer.start();
-					}
-				}
-			}
-			//restart the game if there is a game over--either from losing all lives or completing all levels
-			else if (app.status == GAME_OVER && e.type == SDL_MOUSEBUTTONDOWN) {
-				app.currentLevel = 1;
-				app.score = 0;
-				app.numLives = 5;
-				app.numEnemiesMoving = 0;
-				createLevels(app);
-				app.status = TRANSITION;
-				app.player.clearShots();
-				clearEnemyShots(app);
-
-				for (int row = 0; row < App::MAX_ENEMY_ROWS; ++row)
-					for (int col = 0; col < App::MAX_ENEMY_COLUMNS; ++col) {
-						app.enemies[row][col].resetDiveRects();
-						app.enemies[row][col].resetVelocity();
-					}
-			}
-
-			app.player.handleMoveEvent(e);
-		}	//end event queue handling
-
-		if (app.status == LIFE_RECENTLY_LOST) {
-			if (lifeLostTimer.getTicks() == 0)
-				lifeLostTimer.start();
-
-			if (lifeLostTimer.getTicks() >= App::TRANSITION_TIME) {
-				lifeLostTimer.stop();
-				app.player.setXPosition(75);
-				app.status = RUNNING;
-			}
-		}
-
-		//creates the first level
-		if (app.status == TRANSITION && firstLevelNotCreated == true) {
-			createLevels(app);
-			firstLevelNotCreated = false;
-		}
-
-		if (app.status == RUNNING || app.status == TRANSITION || app.status == LIFE_RECENTLY_LOST) {
-			app.player.move(app);
-		}
-
-		starBackground.moveStars();
-
-		//choose a random enemy to go into a dive
-		if (app.status == RUNNING) { //|| app.status == TRANSITION) {
-			if (app.numEnemiesMoving < App::MAX_DIVING_ENEMIES) {
-				int row = rand() % App::MAX_ENEMY_ROWS;
-				int col = rand() % App::MAX_ENEMY_COLUMNS;
-				int offset = (rand() % App::DESTINATION_VARIANCE) - (App::DESTINATION_VARIANCE / 2);
-				SDL_Rect diveDestination = app.player.getCollider();
-
-				//make sure the offset didn't take the dive destination off screen
-				diveDestination.x += offset;
-				if (diveDestination.x < 0)
-					diveDestination.x = 0;
-
-				if (diveDestination.x + diveDestination.w > App::SCREEN_WIDTH)
-					diveDestination.x = App::SCREEN_WIDTH - diveDestination.w;
-
-				//make sure the randomly chosen enemy is alive and not moving
-				if (app.enemies[row][col].status == Enemy::ALIVE && app.enemies[row][col].getYVelocity() == 0) {
-					app.enemies[row][col].setVelocity();
-					app.enemies[row][col].setDiveLocations(app.enemies[row][col].getCollider(), diveDestination);
-					++app.numEnemiesMoving;
-				}
-			}
-		}
-
-		//fire projectiles from enemies and move said projectiles
-		if (app.status == RUNNING || app.status == LIFE_RECENTLY_LOST) {
-			for (int row = 0; row < App::MAX_ENEMY_ROWS; ++row)
-				for (int col = 0; col < App::MAX_ENEMY_COLUMNS; ++col) {
-					app.enemies[row][col].move(&(app.numEnemiesMoving));
-					if(app.status == RUNNING)
-						app.enemies[row][col].shoot();
-				}
-		}
-
-		//Clear screen and begin rendering
-		SDL_SetRenderDrawColor(app.renderer, 0, 0, 0, 255);
-		SDL_RenderClear(app.renderer);
-
-		//render the background stars and player ship
-		starBackground.renderStars(app);
-		app.player.render(app);
-
-		for (int row = 0; row < App::MAX_ENEMY_ROWS; ++row)
-			for (int col = 0; col < App::MAX_ENEMY_COLUMNS; ++col)
-				app.enemies[row][col].render(app);
-
-		if(app.status == PAUSED)
-			app.pauseTextTexture.render(app, (App::SCREEN_WIDTH - app.pauseTextTexture.getWidth()) / 2, (App::SCREEN_HEIGHT - app.pauseTextTexture.getHeight()) / 2);
-
-		if (app.status == GAME_OVER)
-			app.gameOverTexture.render(app, 5, (App::SCREEN_HEIGHT - app.gameOverTexture.getHeight()) / 2);
-
-		renderInfo(app);
-
-		//Update screen
-		SDL_RenderPresent(app.renderer);
-
-
 		//create the next level and wait a few seconds
 		if (app.status == TRANSITION) {
 			if (!transitionTimer.isStarted()) {
@@ -402,6 +275,63 @@ int main(int argc, char* argv[]) {
 				app.status = RUNNING;
 			}
 		}
+
+		//If the player recently died, have the enemies not shoot or start any dives for a few seconds
+		if (app.status == LIFE_RECENTLY_LOST) {
+			if (lifeLostTimer.getTicks() == 0)
+				lifeLostTimer.start();
+
+			if (lifeLostTimer.getTicks() >= App::TRANSITION_TIME) {
+				lifeLostTimer.stop();
+				app.player.setXPosition(75);
+				app.status = RUNNING;
+			}
+		}
+
+		//handle events
+		while (SDL_PollEvent(&e) != 0) {
+			if (e.type == SDL_QUIT)
+				quit = true;
+			
+			handlePauseEvent(app, e, playerFireTimer);
+			app.player.handleFireEvent(app, e, playerFireTimer);
+			handleGameRestart(app, e);
+			app.player.handleMoveEvent(e);
+		}
+
+		if (app.status == RUNNING || app.status == TRANSITION || app.status == LIFE_RECENTLY_LOST) {
+			app.player.move(app);
+		}
+
+		starBackground.moveStars();
+		selectDiveEnemies(app);
+		moveEnemies(app);
+		
+		//Clear screen and begin rendering
+		SDL_SetRenderDrawColor(app.renderer, 0, 0, 0, 255);
+		SDL_RenderClear(app.renderer);
+
+		//render the background stars and player ship
+		starBackground.renderStars(app);
+		app.player.render(app);
+
+		//render enemies
+		for (int row = 0; row < App::MAX_ENEMY_ROWS; ++row)
+			for (int col = 0; col < App::MAX_ENEMY_COLUMNS; ++col)
+				app.enemies[row][col].render(app);
+
+		//render pause or game over text
+		if(app.status == PAUSED)
+			app.pauseTextTexture.render(app, (App::SCREEN_WIDTH - app.pauseTextTexture.getWidth()) / 2, (App::SCREEN_HEIGHT - app.pauseTextTexture.getHeight()) / 2);
+
+		if (app.status == GAME_OVER)
+			app.gameOverTexture.render(app, 5, (App::SCREEN_HEIGHT - app.gameOverTexture.getHeight()) / 2);
+
+		//render text info
+		renderInfo(app);
+
+		//Update screen
+		SDL_RenderPresent(app.renderer);
 
 		//calculate frame time and wait the appropriate amount of time for the specified frame rate
 		frameTime = frameTimer.getTicks();

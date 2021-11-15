@@ -1,5 +1,7 @@
 #include "logic.h"
 #include "app.h"
+#include "stopwatch.h"
+#include <SDL.h>
 
 /*
  *	This goes through the enemy field in app and initializes them based on the passed in char[][]. The enemies
@@ -143,6 +145,23 @@ void createLevels(App& app) {
 	}
 }
 
+//perform the separating axis test to see if there is a collision
+bool separatingAxisText(SDL_Rect colliderOne, SDL_Rect colliderTwo) {
+	if (colliderOne.y + colliderOne.h <= colliderTwo.y)
+		return false;;
+
+	if (colliderOne.y >= colliderTwo.y + colliderTwo.h)
+		return false;
+
+	if (colliderOne.x + colliderOne.w <= colliderTwo.x)
+		return false;
+
+	if (colliderOne.x >= colliderTwo.x + colliderTwo.w)
+		return false;
+
+	return true;
+}
+
 bool checkPlayerShotCollisionWithEnemy(App& app, SDL_Rect collider) {
 	SDL_Rect enemyCollider;
 	SDL_Rect playerShotCollider = collider;
@@ -152,17 +171,7 @@ bool checkPlayerShotCollisionWithEnemy(App& app, SDL_Rect collider) {
 			enemyCollider = app.enemies[row][column].getCollider();
 			if (app.enemies[row][column].status == Enemy::ALIVE) {
 
-				//perform the separating axis test to see if there is a collision
-				if (enemyCollider.y + enemyCollider.h <= playerShotCollider.y)
-					continue;
-
-				if (enemyCollider.y >= playerShotCollider.y + playerShotCollider.h)
-					continue;
-
-				if (enemyCollider.x + enemyCollider.w <= playerShotCollider.x)
-					continue;
-
-				if (enemyCollider.x >= playerShotCollider.x + playerShotCollider.w)
+				if (separatingAxisText(playerShotCollider, enemyCollider) == false)
 					continue;
 
 				app.enemies[row][column].status = Enemy::DEAD;
@@ -192,17 +201,8 @@ bool checkEnemyShotCollisionWithPlayer(App& app) {
 
 			//check that a collider with non negative values was returned
 			if (enemyShotCollider.x > 0) {
-				//perform separating axis test to determine if there is a collision
-				if (playerCollider.y + playerCollider.h <= enemyShotCollider.y)
-					continue;
-
-				if (playerCollider.y >= enemyShotCollider.y + enemyShotCollider.h)
-					continue;
-
-				if (playerCollider.x + playerCollider.w <= enemyShotCollider.x)
-					continue;
-
-				if (playerCollider.x >= enemyShotCollider.x + enemyShotCollider.w)
+				
+				if (separatingAxisText(playerCollider, enemyShotCollider) == false)
 					continue;
 
 				return true;
@@ -221,17 +221,7 @@ bool checkEnemyCollisionWithPlayer(App& app) {
 		for (int column = 0; column < App::MAX_ENEMY_COLUMNS; ++column) {
 			enemyCollider = app.enemies[row][column].getCollider();
 
-			//perform separating axis test to determine if there is a collision
-			if (playerCollider.y + playerCollider.h <= enemyCollider.y)
-				continue;
-
-			if (playerCollider.y >= enemyCollider.y + enemyCollider.h)
-				continue;
-
-			if (playerCollider.x + playerCollider.w <= enemyCollider.x)
-				continue;
-
-			if (playerCollider.x >= enemyCollider.x + enemyCollider.w)
+			if (separatingAxisText(enemyCollider, playerCollider) == false)
 				continue;
 
 			return true;
@@ -239,6 +229,81 @@ bool checkEnemyCollisionWithPlayer(App& app) {
 	}
 
 	return false;
+}
+
+//handle the pause button--this also pauses and unpauses the player fire timer
+void handlePauseEvent(App& app, SDL_Event& e, Stopwatch& playerFireTimer) {
+	if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN) {
+		if (app.status == RUNNING) {
+			app.status = PAUSED;
+			playerFireTimer.pause();
+			Mix_PauseMusic();
+		}
+		else if (app.status == PAUSED) {
+			app.status = RUNNING;
+			playerFireTimer.unpause();
+			Mix_ResumeMusic();
+		}
+	}
+}
+
+//restart the game if there is a game over--either from losing all lives or completing all levels
+void handleGameRestart(App& app, SDL_Event& e) {
+	if (app.status == GAME_OVER && e.type == SDL_MOUSEBUTTONDOWN) {
+		app.currentLevel = 1;
+		app.score = 0;
+		app.numLives = 5;
+		app.numEnemiesMoving = 0;
+		createLevels(app);
+		app.status = TRANSITION;
+		app.player.clearShots();
+		clearEnemyShots(app);
+
+		for (int row = 0; row < App::MAX_ENEMY_ROWS; ++row)
+			for (int col = 0; col < App::MAX_ENEMY_COLUMNS; ++col) {
+				app.enemies[row][col].resetDiveRects();
+				app.enemies[row][col].resetVelocity();
+			}
+	}
+}
+
+//choose random enemies to go into a dive
+void selectDiveEnemies(App& app) {
+	if (app.status == RUNNING) {
+		if (app.numEnemiesMoving < App::MAX_DIVING_ENEMIES) {
+			int row = rand() % App::MAX_ENEMY_ROWS;
+			int col = rand() % App::MAX_ENEMY_COLUMNS;
+			int offset = (rand() % App::DESTINATION_VARIANCE) - (App::DESTINATION_VARIANCE / 2);
+			SDL_Rect diveDestination = app.player.getCollider();
+
+			//make sure the offset didn't take the dive destination off screen
+			diveDestination.x += offset;
+			if (diveDestination.x < 0)
+				diveDestination.x = 0;
+
+			if (diveDestination.x + diveDestination.w > App::SCREEN_WIDTH)
+				diveDestination.x = App::SCREEN_WIDTH - diveDestination.w;
+
+			//make sure the randomly chosen enemy is alive and not moving
+			if (app.enemies[row][col].status == Enemy::ALIVE && app.enemies[row][col].getYVelocity() == 0) {
+				app.enemies[row][col].setVelocity();
+				app.enemies[row][col].setDiveLocations(app.enemies[row][col].getCollider(), diveDestination);
+				++app.numEnemiesMoving;
+			}
+		}
+	}
+}
+
+//move enemies that are diving and enemy shots
+void moveEnemies(App& app) {
+	if (app.status == RUNNING || app.status == LIFE_RECENTLY_LOST) {
+		for (int row = 0; row < App::MAX_ENEMY_ROWS; ++row)
+			for (int col = 0; col < App::MAX_ENEMY_COLUMNS; ++col) {
+				app.enemies[row][col].move(&(app.numEnemiesMoving));
+				if (app.status == RUNNING)
+					app.enemies[row][col].shoot();	//the function that rolls a die to see if the enemy will shoot this frame
+			}
+	}
 }
 
 void increaseScore(App& app, int row, int column) {

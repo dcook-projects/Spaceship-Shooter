@@ -5,6 +5,7 @@
 #include "playerprojectile.h"
 
 struct App;
+class Stopwatch;
 
 class Player
 {
@@ -13,6 +14,7 @@ public:
 	~Player();
 
 	void handleMoveEvent(SDL_Event& e);
+	void handleFireEvent(App& app, SDL_Event& e, Stopwatch& fireTimer);
 	void move(App& app);
 	void render(App& app);
 	void initialize();
@@ -21,7 +23,7 @@ public:
 	SDL_Rect getCollider() const;
 	void clearShots() const;
 
-	int getVelocityX() {
+	int getVelocityX() const {
 		return velX;
 	}
 
