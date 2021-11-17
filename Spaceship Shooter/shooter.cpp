@@ -243,15 +243,14 @@ int main(int argc, char* argv[]) {
 	Stopwatch frameTimer;   //used to calculate frame rate
 	Uint32 frameTime;
 	Stopwatch transitionTimer;  //used to keep track of how long the game is betweeen levels
-	Stopwatch lifeLostTimer;	//used to keep track of how much time passed once the player lost a life
+	Stopwatch lifeLostTimer;	//used to keep track of how much time has passed once the player lost a life
 	
 	if (!init(app))
 		return EXIT_FAILURE;
 
-	if (!loadMedia(app)) {
-		//getchar();
+	if (!loadMedia(app)) 
 		return EXIT_FAILURE;
-	}
+	
 
 	//play the music
 	Mix_PlayMusic(app.music, -1);
